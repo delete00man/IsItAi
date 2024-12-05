@@ -50,6 +50,19 @@
             top: 20%; /* Deuxième bouton à 20% du haut */
             left: 15%; /* Deuxième bouton à 15% du côté gauche */
         }
+
+        #start-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -67,8 +80,11 @@
         <!-- Boutons ajoutés -->
         <button id="btn1" class="viewer-button" onclick="handleButtonClick('Button 1 clicked')">Button 1</button>
         <button id="btn2" class="viewer-button" onclick="handleButtonClick('Button 2 clicked')">Button 2</button>
-        <audio id="audio" src="Assets/audio.mp3" preload="auto" loop></audio>
+        <audio id="audio" src="Assets/audio.mp3" preload="auto" loop muted></audio>
     </div>
+
+    <!-- Bouton pour démarrer -->
+    <button id="start-btn" onclick="startViewer()">Start</button>
 
     <script>
         const videoContainer = document.getElementById('video-container');
@@ -80,6 +96,24 @@
         function handleButtonClick(message) {
             alert(message);
         }
+
+        // Fonction pour démarrer le viewer 360° et l'audio après le clic de l'utilisateur
+        function startViewer() {
+            // Masquer le bouton de démarrage
+            document.getElementById('start-btn').style.display = 'none';
+
+            // Masquer la vidéo et afficher le viewer 360
+            videoContainer.style.display = 'none';
+            viewerContainer.style.display = 'flex';
+
+            // Charger l'environnement 360
+            create360Viewer();
+
+            // Démarrer l'audio
+            const audio = document.getElementById('audio');
+            audio.play(); // Démarrer la lecture audio
+        }
+
         // Fonction pour créer le Viewer 360° avec audio
         function create360Viewer() {
             const viewer = pannellum.viewer('viewer', {
@@ -90,13 +124,10 @@
                 callback: function() {
                     // Supprimer le fond noir une fois l'image chargée
                     document.getElementById('viewer').style.backgroundColor = 'transparent';
-        
-                    // Démarrer l'audio lorsque le panorama est chargé
-                    const audio = document.getElementById('audio');
-                    audio.play(); // Démarrer la lecture audio
                 }
             });
         }
+
         // Écouter la fin de la vidéo
         video.addEventListener('ended', () => {
             // Masquer la vidéo et afficher le viewer 360
