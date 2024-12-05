@@ -62,6 +62,7 @@
             font-size: 18px;
             border: none;
             cursor: pointer;
+            display: none; /* Cacher le bouton au début */
         }
     </style>
 </head>
@@ -90,17 +91,19 @@
         const videoContainer = document.getElementById('video-container');
         const viewerContainer = document.getElementById('viewer-container');
         const video = document.getElementById('intro-video');
+        const audio = document.getElementById('audio');
+        const startButton = document.getElementById('start-btn');
         const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
-        const message = "Vous allez rentrez dans la matrice..."
 
-        function handleButtonClick(message) {
-            alert(message);
+        // Fonction pour afficher le bouton "Start" une fois la vidéo terminée
+        function showStartButton() {
+            startButton.style.display = 'block';
         }
 
-        // Fonction pour démarrer le viewer 360° et l'audio après le clic de l'utilisateur
+        // Fonction appelée au clic sur le bouton "Start"
         function startViewer() {
-            // Masquer le bouton de démarrage
-            document.getElementById('start-btn').style.display = 'none';
+            // Masquer le bouton "Start"
+            startButton.style.display = 'none';
 
             // Masquer la vidéo et afficher le viewer 360
             videoContainer.style.display = 'none';
@@ -110,8 +113,7 @@
             create360Viewer();
 
             // Démarrer l'audio
-            const audio = document.getElementById('audio');
-            audio.play(); // Démarrer la lecture audio
+            audio.play();
         }
 
         // Fonction pour créer le Viewer 360° avec audio
@@ -128,14 +130,11 @@
             });
         }
 
-        // Écouter la fin de la vidéo
+        // Écouter la fin de la vidéo et afficher le bouton "Start"
         video.addEventListener('ended', () => {
-            // Masquer la vidéo et afficher le viewer 360
             videoContainer.style.display = 'none';
-            viewerContainer.style.display = 'flex';
-
-            // Charger l'environnement 360
-            create360Viewer();
+            viewerContainer.style.display = 'none'; // Cacher le viewer avant de montrer le bouton
+            showStartButton();
         });
 
         // Démarrer avec la vidéo
