@@ -34,6 +34,22 @@
             display: none;
             background-color: black;
         }
+
+        .viewer-button {
+            position: absolute;
+            top: 10%;  /* Positionnez-le à 10% du haut du viewer */
+            left: 5%;  /* Positionnez-le à 5% du côté gauche */
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #btn2 {
+            top: 20%; /* Deuxième bouton à 20% du haut */
+            left: 15%; /* Deuxième bouton à 15% du côté gauche */
+        }
     </style>
 </head>
 <body>
@@ -48,6 +64,10 @@
     <!-- Container for the 360 Viewer -->
     <div id="viewer-container">
         <div id="viewer"></div>
+        <!-- Boutons ajoutés -->
+        <button id="btn1" class="viewer-button" onclick="handleButtonClick('Button 1 clicked')">Button 1</button>
+        <button id="btn2" class="viewer-button" onclick="handleButtonClick('Button 2 clicked')">Button 2</button>
+        <audio id="audio" src="Assets/audio.mp3" preload="auto" loop></audio>
     </div>
 
     <script>
@@ -55,17 +75,28 @@
         const viewerContainer = document.getElementById('viewer-container');
         const video = document.getElementById('intro-video');
         const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
+        const message = "Vous allez rentrez dans la matrice..."
 
-        // Fonction pour créer le Viewer 360°
+        function handleButtonClick(message) {
+            alert(message);
+        }
+        // Fonction pour créer le Viewer 360° avec audio
         function create360Viewer() {
-            pannellum.viewer('viewer', {
+            const viewer = pannellum.viewer('viewer', {
                 type: 'equirectangular',
                 panorama: panoramaImage,
                 autoLoad: true,
-                autoRotate: -3
+                autoRotate: -3,
+                callback: function() {
+                    // Supprimer le fond noir une fois l'image chargée
+                    document.getElementById('viewer').style.backgroundColor = 'transparent';
+        
+                    // Démarrer l'audio lorsque le panorama est chargé
+                    const audio = document.getElementById('audio');
+                    audio.play(); // Démarrer la lecture audio
+                }
             });
         }
-
         // Écouter la fin de la vidéo
         video.addEventListener('ended', () => {
             // Masquer la vidéo et afficher le viewer 360
