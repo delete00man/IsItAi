@@ -150,26 +150,34 @@
             });
         }
 
-        // Fonction pour faire tourner rapidement l'image
         function rotateImage() {
-            const duration = 2000; // Durée de la rotation rapide en ms
-            const currentYaw = viewer.getYaw();
-            const targetYaw = currentYaw + 360; // Tourner de 360°
+    const duration = 2000; // Durée de la rotation rapide en ms
+    const currentYaw = viewer.getYaw(); // Angle actuel en degrés
+    const targetYaw = currentYaw + 360; // Angle cible pour une rotation complète
 
-            // Utiliser une animation pour faire tourner l'image rapidement
-            const startTime = performance.now();
-            function animateRotation(time) {
-                const progress = (time - startTime) / duration;
-                if (progress < 1) {
-                    viewer.setYaw(currentYaw + (targetYaw - currentYaw) * progress);
-                    requestAnimationFrame(animateRotation);
-                } else {
-                    viewer.setYaw(targetYaw); // Assurer que l'on a bien atteint 360°
-                }
-            }
+    const startTime = performance.now();
 
+    // Fonction d'animation pour interpoler la rotation
+    function animateRotation(time) {
+        const elapsed = time - startTime; // Temps écoulé depuis le début de l'animation
+        const progress = Math.min(elapsed / duration, 1); // Progression entre 0 et 1
+
+        // Calculer le nouvel angle interpolé
+        const interpolatedYaw = currentYaw + (targetYaw - currentYaw) * progress;
+
+        // Appliquer l'angle au viewer
+        viewer.setYaw(interpolatedYaw);
+
+        // Continuer l'animation tant qu'elle n'est pas terminée
+        if (progress < 1) {
             requestAnimationFrame(animateRotation);
         }
+    }
+
+    // Démarrer l'animation
+    requestAnimationFrame(animateRotation);
+}
+
 
         // Écouter la fin de la vidéo et afficher le bouton "Start"
         video.addEventListener('ended', () => {
