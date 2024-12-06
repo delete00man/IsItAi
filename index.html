@@ -82,8 +82,11 @@
         <div id="viewer"></div>
         <!-- Conteneur des boutons ajoutés -->
         <div class="viewer-button-container">
-            <button id="btn1" class="viewer-button" onclick="handleButtonClick('Button 1 clicked')">Button 1</button>
-            <button id="btn2" class="viewer-button" onclick="handleButtonClick('Button 2 clicked')">Button 2</button>
+            <!-- Bouton redirigeant vers Instagram -->
+            <button id="btn1" class="viewer-button" onclick="window.open('https://www.instagram.com/145h7s', '_blank')">Instagram</button>
+
+            <!-- Bouton pour tourner rapidement l'image -->
+            <button id="btn2" class="viewer-button" onclick="rotateImage()">Tourner rapidement</button>
         </div>
         <audio id="audio" src="Assets/audio.mp3" preload="auto" loop></audio>
     </div>
@@ -145,6 +148,27 @@
                 // Si l'utilisateur arrête de bouger, on redémarre la rotation
                 viewer.setAutoRotate(autoRotate);
             });
+        }
+
+        // Fonction pour faire tourner rapidement l'image
+        function rotateImage() {
+            const duration = 2000; // Durée de la rotation rapide en ms
+            const currentYaw = viewer.getYaw();
+            const targetYaw = currentYaw + 360; // Tourner de 360°
+
+            // Utiliser une animation pour faire tourner l'image rapidement
+            const startTime = performance.now();
+            function animateRotation(time) {
+                const progress = (time - startTime) / duration;
+                if (progress < 1) {
+                    viewer.setYaw(currentYaw + (targetYaw - currentYaw) * progress);
+                    requestAnimationFrame(animateRotation);
+                } else {
+                    viewer.setYaw(targetYaw); // Assurer que l'on a bien atteint 360°
+                }
+            }
+
+            requestAnimationFrame(animateRotation);
         }
 
         // Écouter la fin de la vidéo et afficher le bouton "Start"
