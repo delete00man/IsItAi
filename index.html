@@ -97,7 +97,6 @@
         const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
         let viewer;
         let autoRotate = -3; // Vitesse de rotation automatique
-        let inactivityTimeout;
 
         // Fonction pour afficher le bouton "Start" une fois la vidéo terminée
         function showStartButton() {
@@ -132,24 +131,6 @@
                     document.getElementById('viewer').style.backgroundColor = 'transparent';
                 }
             });
-
-            // Détecter quand l'utilisateur arrête de bouger la caméra
-            viewer.on('mousemove', () => {
-                // Lorsque l'utilisateur interagit, on arrête la rotation
-                viewer.setAutoRotate(0);
-
-                // Réinitialiser le timeout d'inactivité
-                clearTimeout(inactivityTimeout);
-                inactivityTimeout = setTimeout(() => {
-                    // Relancer la rotation automatique après 3 secondes d'inactivité
-                    viewer.setAutoRotate(autoRotate);
-                }, 3000); // Temps d'inactivité avant redémarrer la rotation
-            });
-
-            viewer.on('mouseleave', () => {
-                // Si l'utilisateur arrête de bouger, on redémarre la rotation
-                viewer.setAutoRotate(autoRotate);
-            });
         }
 
         // Écouter la fin de la vidéo et afficher le bouton "Start"
@@ -175,17 +156,10 @@
             const currentYaw = viewer.getYaw();
             let newYaw = currentYaw + 720; // Effectuer un tour complet de 720°
 
-            // Si la valeur dépasse 360°, la remettre dans une plage valide
-            if (newYaw >= 360) {
-                newYaw -= 360;
-            }
+            // Appliquer la rotation sans changer l'angle de la caméra sur l'axe vertical
+            viewer.lookAt(newYaw, viewer.getPitch()); 
 
-            viewer.lookAt(newYaw, viewer.getPitch()); // Appliquer la rotation horizontale
 
-            // Redémarrer l'auto-rotation après la rotation de la caméra
-            setTimeout(() => {
-                viewer.setAutoRotate(autoRotate);
-            }, 1000); // Attendre 1 seconde pour que la rotation de 720° soit terminée avant de réactiver l'auto-rotation
         }
     </script>
 </body>
