@@ -97,6 +97,7 @@
         const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
         let viewer;
         let autoRotate = -3; // Vitesse de rotation automatique
+        let inactivityTimeout;
 
         // Fonction pour afficher le bouton "Start" une fois la vidéo terminée
         function showStartButton() {
@@ -136,6 +137,13 @@
             viewer.on('mousemove', () => {
                 // Lorsque l'utilisateur interagit, on arrête la rotation
                 viewer.setAutoRotate(0);
+
+                // Réinitialiser le timeout d'inactivité
+                clearTimeout(inactivityTimeout);
+                inactivityTimeout = setTimeout(() => {
+                    // Relancer la rotation automatique après 3 secondes d'inactivité
+                    viewer.setAutoRotate(autoRotate);
+                }, 3000); // Temps d'inactivité avant redémarrer la rotation
             });
 
             viewer.on('mouseleave', () => {
@@ -162,7 +170,7 @@
             }
         }
 
-        // Effectuer une rotation de 720° (2 tours)
+        // Effectuer une rotation de 720° (2 tours) horizontalement (yaw)
         function perform720Rotation() {
             const currentYaw = viewer.getYaw();
             let newYaw = currentYaw + 720; // Effectuer un tour complet de 720°
@@ -172,7 +180,7 @@
                 newYaw -= 360;
             }
 
-            viewer.lookAt(newYaw, viewer.getPitch()); // Appliquer la rotation
+            viewer.lookAt(newYaw, viewer.getPitch()); // Appliquer la rotation horizontale
 
             // Redémarrer l'auto-rotation après la rotation de la caméra
             setTimeout(() => {
