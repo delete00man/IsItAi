@@ -33,12 +33,13 @@
         #viewer-container {
             display: none;
             background-color: black;
+            position: relative;
         }
 
         .viewer-button {
             position: absolute;
-            top: 10%;  /* Positionnez-le à 10% du haut du viewer */
-            left: 5%;  /* Positionnez-le à 5% du côté gauche */
+            bottom: 10%;  /* Placer les boutons à 10% du bas */
+            left: 10%;  /* Placer les boutons à 10% du côté gauche */
             padding: 10px;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
@@ -47,8 +48,8 @@
         }
 
         #btn2 {
-            top: 20%; /* Deuxième bouton à 20% du haut */
-            left: 15%; /* Deuxième bouton à 15% du côté gauche */
+            bottom: 20%; /* Deuxième bouton à 20% du bas */
+            left: 30%; /* Deuxième bouton à 30% du côté gauche */
         }
 
         #start-btn {
@@ -94,6 +95,8 @@
         const audio = document.getElementById('audio');
         const startButton = document.getElementById('start-btn');
         const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
+        let viewer;
+        let autoRotate = -3; // Vitesse de rotation automatique
 
         // Fonction pour afficher le bouton "Start" une fois la vidéo terminée
         function showStartButton() {
@@ -112,21 +115,32 @@
             // Charger l'environnement 360
             create360Viewer();
 
-            // Démarrer l'audio
+            // Démarrer l'audio (sans 'muted' cette fois)
             audio.play();
         }
 
         // Fonction pour créer le Viewer 360° avec audio
         function create360Viewer() {
-            const viewer = pannellum.viewer('viewer', {
+            viewer = pannellum.viewer('viewer', {
                 type: 'equirectangular',
                 panorama: panoramaImage,
                 autoLoad: true,
-                autoRotate: -3,
+                autoRotate: autoRotate, // Lancer la rotation automatique
                 callback: function() {
                     // Supprimer le fond noir une fois l'image chargée
                     document.getElementById('viewer').style.backgroundColor = 'transparent';
                 }
+            });
+
+            // Détecter quand l'utilisateur arrête de bouger la caméra
+            viewer.on('mousemove', () => {
+                // Lorsque l'utilisateur interagit, on arrête la rotation
+                viewer.setAutoRotate(0);
+            });
+
+            viewer.on('mouseleave', () => {
+                // Si l'utilisateur arrête de bouger, on redémarre la rotation
+                viewer.setAutoRotate(autoRotate);
             });
         }
 
