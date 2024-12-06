@@ -28,6 +28,7 @@
             justify-content: center;
             align-items: center;
             background-color: black;
+            display: none; /* Masquer le viewer initialement */
         }
 
         .viewer-button {
@@ -41,9 +42,27 @@
             cursor: pointer;
             margin-bottom: 10px;
         }
+
+        #start-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            display: block; /* Le bouton start est visible au début */
+        }
     </style>
 </head>
 <body>
+    <!-- Bouton Start -->
+    <button id="start-btn" onclick="startViewer()">Start</button>
+
+    <!-- Container pour le Viewer 360° -->
     <div id="viewer-container">
         <div id="viewer"></div>
         <button id="btn1" class="viewer-button" onclick="rotateCamera()">Rotate</button>
@@ -52,8 +71,20 @@
     <script>
         let viewer;
         const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
+        const startButton = document.getElementById('start-btn');
+        const viewerContainer = document.getElementById('viewer-container');
 
-        // Créer le viewer 360°
+        // Fonction pour démarrer le viewer après le clic sur le bouton "Start"
+        function startViewer() {
+            // Masquer le bouton "Start" et afficher le viewer
+            startButton.style.display = 'none';
+            viewerContainer.style.display = 'flex';
+
+            // Créer le viewer 360°
+            create360Viewer();
+        }
+
+        // Créer le viewer 360° avec Pannellum
         function create360Viewer() {
             viewer = pannellum.viewer('viewer', {
                 type: 'equirectangular',
@@ -63,15 +94,12 @@
             });
         }
 
-        // Fonction pour effectuer la rotation rapide
+        // Fonction pour effectuer une rotation rapide de 180° à l'horizontale (droite/gauche)
         function rotateCamera() {
             const currentYaw = viewer.getYaw();  // Obtenir l'angle actuel de la caméra
             const newYaw = currentYaw + 180;     // Tourner de 180° à droite (ou gauche)
             viewer.lookAt(newYaw, viewer.getPitch()); // Appliquer la nouvelle position
         }
-
-        // Initialiser le viewer
-        create360Viewer();
     </script>
 </body>
 </html>
