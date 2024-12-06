@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>360 Image Viewer with Intro Video</title>
+    <title>360 Image Viewer</title>
     <script src="https://cdn.pannellum.org/2.5/pannellum.js"></script>
     <link rel="stylesheet" href="https://cdn.pannellum.org/2.5/pannellum.css">
     <style>
@@ -18,156 +18,60 @@
             position: relative;
         }
 
-        #video-container, #viewer-container {
+        #viewer-container {
             width: 100%;
             height: 100%;
             position: absolute;
             top: 0;
             left: 0;
-            display: none;
+            display: flex;
             justify-content: center;
             align-items: center;
-        }
-
-        #video-container video {
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-        #viewer-container {
-            display: none;
             background-color: black;
-            position: relative;
         }
 
-        /* Styles pour les boutons alignés */
         .viewer-button {
             position: absolute;
-            bottom: 10%; /* Placer les boutons à 10% du bas */
-            right: 10%; /* Placer les boutons à 10% du côté droit */
+            bottom: 10%;
+            right: 10%;
             padding: 10px;
             background-color: rgba(0, 0, 0, 0.5);
             color: white;
             border: none;
             cursor: pointer;
-            margin-bottom: 10px; /* Espacement entre les boutons */
-        }
-
-        /* Ajustement du positionnement des boutons pour les aligner */
-        #btn2 {
-            bottom: 20%; /* Deuxième bouton à 20% du bas */
-        }
-
-        #start-btn {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 15px 30px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-size: 18px;
-            border: none;
-            cursor: pointer;
-            display: none; /* Cacher le bouton au début */
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <!-- Container pour la vidéo d'introduction -->
-    <div id="video-container">
-        <video id="intro-video" autoplay muted>
-            <source src="Assets/video.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-
-    <!-- Container pour le Viewer 360° -->
     <div id="viewer-container">
         <div id="viewer"></div>
-        <!-- Boutons ajoutés -->
-        <button id="btn1" class="viewer-button" onclick="perform360Rotation()">Button 1</button>
-        <button id="btn2" class="viewer-button" onclick="perform360Rotation()">Button 2</button>
-        <audio id="audio" src="Assets/audio.mp3" preload="auto" loop></audio>
+        <button id="btn1" class="viewer-button" onclick="rotateCamera()">Rotate</button>
     </div>
 
-    <!-- Bouton de démarrage -->
-    <button id="start-btn" onclick="startViewer()">Start</button>
-
     <script>
-        const videoContainer = document.getElementById('video-container');
-        const viewerContainer = document.getElementById('viewer-container');
-        const video = document.getElementById('intro-video');
-        const audio = document.getElementById('audio');
-        const startButton = document.getElementById('start-btn');
-        const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
         let viewer;
-        let autoRotate = -3; // Vitesse de rotation automatique
+        const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
 
-        // Fonction pour afficher le bouton "Start" après la fin de la vidéo
-        function showStartButton() {
-            startButton.style.display = 'block';
-        }
-
-        // Fonction appelée au clic sur le bouton "Start"
-        function startViewer() {
-            // Masquer le bouton "Start"
-            startButton.style.display = 'none';
-
-            // Masquer la vidéo et afficher le viewer 360
-            videoContainer.style.display = 'none';
-            viewerContainer.style.display = 'flex';
-
-            // Créer le viewer 360
-            create360Viewer();
-
-            // Démarrer l'audio (sans 'muted' cette fois)
-            audio.play();
-        }
-
-        // Fonction pour créer le Viewer 360° avec audio
+        // Créer le viewer 360°
         function create360Viewer() {
             viewer = pannellum.viewer('viewer', {
                 type: 'equirectangular',
                 panorama: panoramaImage,
                 autoLoad: true,
-                autoRotate: autoRotate, // Lancer la rotation automatique
-                callback: function() {
-                    // Supprimer le fond noir une fois l'image chargée
-                    document.getElementById('viewer').style.backgroundColor = 'transparent';
-                }
+                showControls: false, // Masquer les contrôles par défaut
             });
         }
 
-        // Écouter la fin de la vidéo et afficher le bouton "Start"
-        video.addEventListener('ended', () => {
-            videoContainer.style.display = 'none';
-            viewerContainer.style.display = 'none'; // Cacher le viewer avant de montrer le bouton
-            showStartButton();
-        });
-
-        // Démarrer avec la vidéo
-        videoContainer.style.display = 'flex';
-
-        // Fonction pour effectuer une rotation rapide de la caméra (360°)
-        function perform360Rotation() {
-            console.log("Button clicked, rotating the camera!");
-            
-            // Récupérer l'angle actuel de la caméra
-            const currentYaw = viewer.getYaw();
-            let newYaw = currentYaw + 720; // Effectuer deux tours (720°)
-
-            // Appliquer la rotation rapide
-            viewer.lookAt(newYaw, viewer.getPitch()); 
-
-            // Arrêter l'auto-rotation après la rotation
-            viewer.setAutoRotate(0);
-
-            // Réactiver l'auto-rotation après un court délai (1 seconde)
-            setTimeout(() => {
-                viewer.setAutoRotate(autoRotate);
-            }, 1000); // Attendre 1 seconde pour que la rotation de 720° soit terminée avant de réactiver l'auto-rotation
+        // Fonction pour effectuer la rotation rapide
+        function rotateCamera() {
+            const currentYaw = viewer.getYaw();  // Obtenir l'angle actuel de la caméra
+            const newYaw = currentYaw + 180;     // Tourner de 180° à droite (ou gauche)
+            viewer.lookAt(newYaw, viewer.getPitch()); // Appliquer la nouvelle position
         }
+
+        // Initialiser le viewer
+        create360Viewer();
     </script>
 </body>
 </html>
