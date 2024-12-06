@@ -153,6 +153,32 @@
 
         // Démarrer avec la vidéo
         videoContainer.style.display = 'flex';
+
+        // Fonction pour faire un 720° au clic sur le bouton 1
+        function handleButtonClick(message) {
+            console.log(message);
+            if (message === 'Button 1 clicked') {
+                perform720Rotation();
+            }
+        }
+
+        // Effectuer une rotation de 720° (2 tours)
+        function perform720Rotation() {
+            const currentYaw = viewer.getYaw();
+            let newYaw = currentYaw + 720; // Effectuer un tour complet de 720°
+
+            // Si la valeur dépasse 360°, la remettre dans une plage valide
+            if (newYaw >= 360) {
+                newYaw -= 360;
+            }
+
+            viewer.lookAt(newYaw, viewer.getPitch()); // Appliquer la rotation
+
+            // Redémarrer l'auto-rotation après la rotation de la caméra
+            setTimeout(() => {
+                viewer.setAutoRotate(autoRotate);
+            }, 1000); // Attendre 1 seconde pour que la rotation de 720° soit terminée avant de réactiver l'auto-rotation
+        }
     </script>
 </body>
 </html>
