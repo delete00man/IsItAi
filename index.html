@@ -72,7 +72,7 @@
     <!-- Container for the Intro Video -->
     <div id="video-container">
         <video id="intro-video" autoplay muted>
-            <source src="Assets/video.mp4" type="video/mp4">
+            <source src="Assets/145H7S.mov" type="video/mov">
             Your browser does not support the video tag.
         </video>
     </div>
@@ -82,7 +82,6 @@
         <div id="viewer"></div>
         <div class="viewer-button-container">
             <button id="btn1" class="viewer-button" onclick="window.open('https://www.instagram.com/145h7s', '_blank')">Instagram</button>
-            <button id="btn2" class="viewer-button" onclick="rotateImage()">Tourner rapidement</button>
         </div>
         <audio id="audio" src="Assets/audio.mp3" preload="auto" loop></audio>
     </div>
@@ -102,10 +101,10 @@
         scene1: "Assets/audio.mp3",
         scene2: "Assets/City of Echoes().mp3",
         scene3: "Assets/Le Prochain Horizon().mp3",
-        scene4: "Assets/City of Echoes.mp3",
-        scene5: "Assets/Rough Rustling Leaves.mp3",
-        scene6: "Assets/Rough Rustling Leaves().mp3",
-        scene7: "Assets/Rippling Waters.mp3"
+        scene4: "/City of Echoes.mp3",
+        scene5: "/Rough Rustling Leaves.mp3",
+        scene6: "/Rough Rustling Leaves().mp3",
+        scene7: "/Rippling Waters.mp3"
     };
 
     // Change la musique en fonction de la scène
@@ -164,25 +163,25 @@
             },
             "scenes": {
                 "scene1": {
-                    "title": "First Environment",
+                    "title": "Maison",
                     "hfov": 110,
                     "pitch": 0,
                     "yaw": 0,
                     "type": "equirectangular",
-                    "panorama": "Assets/ordinateur.jpg",
+                    "panorama": "/ordinateur.jpg",
                     "hotSpots": [
                         {
                             "pitch": 0,
-                            "yaw": 45,
+                            "yaw": 0,
                             "type": "scene",
-                            "text": "Go to Second Environment",
+                            "text": "Enter",
                             "sceneId": "scene2",
                             "clickHandlerFunc": () => changeSceneMusic('scene2')
                         }
                     ]
                 },
                 "scene2": {
-                    "title": "Second Environment",
+                    "title": "Fractal Nexus",
                     "hfov": 110,
                     "pitch": 0,
                     "yaw": 0,
@@ -191,16 +190,16 @@
                     "hotSpots": [
                         {
                             "pitch": 0,
-                            "yaw": -45,
+                            "yaw": 0,
                             "type": "scene",
-                            "text": "Back to First Environment",
+                            "text": "Next Environnement",
                             "sceneId": "scene3",
                             "clickHandlerFunc": () => changeSceneMusic('scene3')
                         }
                     ]
                 },
                 "scene3": {
-                        "title": "First Environment",
+                        "title": "Urban Canvas",
                         "hfov": 110,
                         "pitch": 0,
                         "yaw": 0,
@@ -209,16 +208,16 @@
                         "hotSpots": [
                             {
                                 "pitch": 0,
-                                "yaw": 45,
+                                "yaw": 0,
                                 "type": "scene",
-                                "text": "Go to Second Environment",
+                                "text": "Next Environnement",
                                 "sceneId": "scene4",
                                 "clickHandlerFunc": () => changeSceneMusic('scene4')
                             }
                         ]
                     },
                     "scene4": {
-                        "title": "First Environment",
+                        "title": "City",
                         "hfov": 110,
                         "pitch": 0,
                         "yaw": 0,
@@ -227,16 +226,16 @@
                         "hotSpots": [
                             {
                                 "pitch": 0,
-                                "yaw": 45,
+                                "yaw": 0,
                                 "type": "scene",
-                                "text": "Go to Second Environment",
+                                "text": "Next Environnement",
                                 "sceneId": "scene5",
                                 "clickHandlerFunc": () => changeSceneMusic('scene5')
                             }
                         ]
                     },
                     "scene5": {
-                        "title": "First Environment",
+                        "title": "Luminous Abyss",
                         "hfov": 110,
                         "pitch": 0,
                         "yaw": 0,
@@ -245,16 +244,16 @@
                         "hotSpots": [
                             {
                                 "pitch": 0,
-                                "yaw": 45,
+                                "yaw": 0,
                                 "type": "scene",
-                                "text": "Go to Second Environment",
+                                "text": "Next Environnement",
                                 "sceneId": "scene6",
                                 "clickHandlerFunc": () => changeSceneMusic('scene6')
                             }
                         ]
                     },
                     "scene6": {
-                        "title": "First Environment",
+                        "title": "The Scream",
                         "hfov": 110,
                         "pitch": 0,
                         "yaw": 0,
@@ -263,16 +262,16 @@
                         "hotSpots": [
                             {
                                 "pitch": 0,
-                                "yaw": 45,
+                                "yaw": 0,
                                 "type": "scene",
-                                "text": "Go to Second Environment",
+                                "text": "Next Environnement",
                                 "sceneId": "scene7",
                                 "clickHandlerFunc": () => changeSceneMusic('scene7')
                             }
                         ]
                     },
                     "scene7": {
-                        "title": "First Environment",
+                        "title": "Ethereal Drift",
                         "hfov": 110,
                         "pitch": 0,
                         "yaw": 0,
@@ -281,9 +280,9 @@
                         "hotSpots": [
                             {
                                 "pitch": 0,
-                                "yaw": 45,
+                                "yaw": 0,
                                 "type": "scene",
-                                "text": "Go to Second Environment",
+                                "text": "Return to home",
                                 "sceneId": "scene1",
                                 "clickHandlerFunc": () => changeSceneMusic('scene1')
                             }
