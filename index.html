@@ -38,11 +38,11 @@
 
         .viewer-button-container {
             position: absolute;
-            bottom: 10%;  /* Placer les boutons à 10% du bas */
-            right: 5%;  /* Placer les boutons à 5% du côté droit */
+            bottom: 10%;
+            right: 5%;
             display: flex;
-            justify-content: flex-start; /* Aligner les boutons horizontalement */
-            gap: 10px; /* Espace entre les boutons */
+            justify-content: flex-start;
+            gap: 10px;
         }
 
         .viewer-button {
@@ -64,7 +64,7 @@
             font-size: 18px;
             border: none;
             cursor: pointer;
-            display: none; /* Cacher le bouton au début */
+            display: none;
         }
     </style>
 </head>
@@ -80,18 +80,13 @@
     <!-- Container for the 360 Viewer -->
     <div id="viewer-container">
         <div id="viewer"></div>
-        <!-- Conteneur des boutons ajoutés -->
         <div class="viewer-button-container">
-            <!-- Bouton redirigeant vers Instagram -->
             <button id="btn1" class="viewer-button" onclick="window.open('https://www.instagram.com/145h7s', '_blank')">Instagram</button>
-
-            <!-- Bouton pour tourner rapidement l'image -->
             <button id="btn2" class="viewer-button" onclick="rotateImage()">Tourner rapidement</button>
         </div>
         <audio id="audio" src="Assets/audio.mp3" preload="auto" loop></audio>
     </div>
 
-    <!-- Bouton pour démarrer -->
     <button id="start-btn" onclick="startViewer()">Start</button>
 
     <script>
@@ -100,93 +95,91 @@
         const video = document.getElementById('intro-video');
         const audio = document.getElementById('audio');
         const startButton = document.getElementById('start-btn');
-        const panoramaImage = "Assets/art.png"; // Chemin de votre image 360°
+        const autoRotate = -3;
         let viewer;
-        let autoRotate = -3; // Vitesse de rotation automatique
 
-        // Fonction pour afficher le bouton "Start" une fois la vidéo terminée
         function showStartButton() {
             startButton.style.display = 'block';
         }
 
-        // Fonction appelée au clic sur le bouton "Start"
         function startViewer() {
-            // Masquer le bouton "Start"
             startButton.style.display = 'none';
-
-            // Masquer la vidéo et afficher le viewer 360
             videoContainer.style.display = 'none';
             viewerContainer.style.display = 'flex';
-
-            // Charger l'environnement 360
-            create360Viewer();
-
-            // Démarrer l'audio (sans 'muted' cette fois)
+            createTourViewer();
             audio.play();
         }
 
-        // Fonction pour créer le Viewer 360° avec audio
-        function create360Viewer() {
+        function createTourViewer() {
             viewer = pannellum.viewer('viewer', {
-                type: 'equirectangular',
-                panorama: panoramaImage,
-                autoLoad: true,
-                autoRotate: autoRotate, // Lancer la rotation automatique
-                callback: function() {
-                    // Supprimer le fond noir une fois l'image chargée
-                    document.getElementById('viewer').style.backgroundColor = 'transparent';
+                "default": {
+                    "firstScene": "scene1",
+                    "author": "Your Name",
+                    "sceneFadeDuration": 1000
+                },
+                "scenes": {
+                    "scene1": {
+                        "title": "First Environment",
+                        "hfov": 110,
+                        "pitch": 0,
+                        "yaw": 0,
+                        "type": "equirectangular",
+                        "panorama": "Assets/art.png",
+                        "hotSpots": [
+                            {
+                                "pitch": 0,
+                                "yaw": 45,
+                                "type": "scene",
+                                "text": "Go to Second Environment",
+                                "sceneId": "scene2"
+                            }
+                        ]
+                    },
+                    "scene2": {
+                        "title": "Second Environment",
+                        "hfov": 110,
+                        "pitch": 0,
+                        "yaw": 0,
+                        "type": "equirectangular",
+                        "panorama": "Assets/second_env.png",
+                        "hotSpots": [
+                            {
+                                "pitch": 0,
+                                "yaw": -45,
+                                "type": "scene",
+                                "text": "Back to First Environment",
+                                "sceneId": "scene1"
+                            }
+                        ]
+                    }
                 }
-            });
-
-            // Détecter quand l'utilisateur arrête de bouger la caméra
-            viewer.on('mousemove', () => {
-                // Lorsque l'utilisateur interagit, on arrête la rotation
-                viewer.setAutoRotate(0);
-            });
-
-            viewer.on('mouseleave', () => {
-                // Si l'utilisateur arrête de bouger, on redémarre la rotation
-                viewer.setAutoRotate(autoRotate);
             });
         }
 
         function rotateImage() {
-    const duration = 2000; // Durée de la rotation rapide en ms
-    const currentYaw = viewer.getYaw(); // Angle actuel en degrés
-    const targetYaw = currentYaw + 360; // Angle cible pour une rotation complète
+            const duration = 2000;
+            const currentYaw = viewer.getYaw();
+            const targetYaw = currentYaw + 360;
+            const startTime = performance.now();
 
-    const startTime = performance.now();
-
-    // Fonction d'animation pour interpoler la rotation
-    function animateRotation(time) {
-        const elapsed = time - startTime; // Temps écoulé depuis le début de l'animation
-        const progress = Math.min(elapsed / duration, 1); // Progression entre 0 et 1
-
-        // Calculer le nouvel angle interpolé
-        const interpolatedYaw = currentYaw + (targetYaw - currentYaw) * progress;
-
-        // Appliquer l'angle au viewer
-        viewer.setYaw(interpolatedYaw);
-
-        // Continuer l'animation tant qu'elle n'est pas terminée
-        if (progress < 1) {
+            function animateRotation(time) {
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const interpolatedYaw = currentYaw + (targetYaw - currentYaw) * progress;
+                viewer.setYaw(interpolatedYaw);
+                if (progress < 1) {
+                    requestAnimationFrame(animateRotation);
+                }
+            }
             requestAnimationFrame(animateRotation);
         }
-    }
 
-    // Démarrer l'animation
-    requestAnimationFrame(animateRotation);
-}
-
-
-        // Écouter la fin de la vidéo et afficher le bouton "Start"
         video.addEventListener('ended', () => {
             videoContainer.style.display = 'none';
-            viewerContainer.style.display = 'none'; // Cacher le viewer avant de montrer le bouton
+            viewerContainer.style.display = 'none';
             showStartButton();
         });
 
-        // Démarrer avec la vidéo
         videoContainer.style.display = 'flex';
     </script>
 </body>
