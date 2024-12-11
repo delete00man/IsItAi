@@ -90,69 +90,116 @@
     <button id="start-btn" onclick="startViewer()">Start</button>
 
     <script>
-        const videoContainer = document.getElementById('video-container');
-        const viewerContainer = document.getElementById('viewer-container');
-        const video = document.getElementById('intro-video');
-        const audio = document.getElementById('audio');
-        const startButton = document.getElementById('start-btn');
-        const autoRotate = -3;
-        let viewer;
+    const videoContainer = document.getElementById('video-container');
+    const viewerContainer = document.getElementById('viewer-container');
+    const video = document.getElementById('intro-video');
+    const audio = document.getElementById('audio');
+    const startButton = document.getElementById('start-btn');
+    let viewer;
 
-        function showStartButton() {
-            startButton.style.display = 'block';
+    // Mapping des scènes aux fichiers audio
+    const sceneAudioMap = {
+        scene1: "Assets/audio.mp3",
+        scene2: "Assets/City of Echoes().mp3",
+        scene3: "Assets/Le Prochain Horizon().mp3",
+        scene4: "Assets/City of Echoes.mp3",
+        scene5: "Assets/Rough Rustling Leaves.mp3",
+        scene6: "Assets/Rough Rustling Leaves().mp3",
+        scene7: "Assets/Rippling Waters.mp3"
+    };
+
+    // Change la musique en fonction de la scène
+    function changeSceneMusic(sceneId) {
+        const newAudioSrc = sceneAudioMap[sceneId];
+        if (audio.src !== newAudioSrc) {
+            fadeOutAudio(() => {
+                audio.src = newAudioSrc;
+                fadeInAudio();
+            });
         }
+    }
 
-        function startViewer() {
-            startButton.style.display = 'none';
-            videoContainer.style.display = 'none';
-            viewerContainer.style.display = 'flex';
-            createTourViewer();
-            audio.play();
-        }
+    // Fondu sonore pour couper la musique
+    function fadeOutAudio(callback) {
+        const fadeDuration = 1000; // 1 seconde
+        const step = 0.05;
+        const interval = fadeDuration / (1 / step);
 
-        function createTourViewer() {
-            viewer = pannellum.viewer('viewer', {
-                "default": {
-                    "firstScene": "scene1",
-                    "author": "Your Name",
-                    "sceneFadeDuration": 1000
+        const fade = setInterval(() => {
+            if (audio.volume > 0) {
+                audio.volume = Math.max(0, audio.volume - step);
+            } else {
+                clearInterval(fade);
+                audio.pause();
+                if (callback) callback();
+            }
+        }, interval);
+    }
+
+    // Fondu sonore pour démarrer la musique
+    function fadeInAudio() {
+        const fadeDuration = 1000; // 1 seconde
+        const step = 0.05;
+        const interval = fadeDuration / (1 / step);
+
+        audio.volume = 0;
+        audio.play();
+
+        const fade = setInterval(() => {
+            if (audio.volume < 1) {
+                audio.volume = Math.min(1, audio.volume + step);
+            } else {
+                clearInterval(fade);
+            }
+        }, interval);
+    }
+
+    // Crée la visionneuse panoramique
+    function createTourViewer() {
+        viewer = pannellum.viewer('viewer', {
+            "default": {
+                "firstScene": "scene1",
+                "author": "145h7s",
+                "sceneFadeDuration": 1000
+            },
+            "scenes": {
+                "scene1": {
+                    "title": "First Environment",
+                    "hfov": 110,
+                    "pitch": 0,
+                    "yaw": 0,
+                    "type": "equirectangular",
+                    "panorama": "Assets/ordinateur.jpg",
+                    "hotSpots": [
+                        {
+                            "pitch": 0,
+                            "yaw": 45,
+                            "type": "scene",
+                            "text": "Go to Second Environment",
+                            "sceneId": "scene2",
+                            "clickHandlerFunc": () => changeSceneMusic('scene2')
+                        }
+                    ]
                 },
-                "scenes": {
-                    "scene1": {
-                        "title": "First Environment",
-                        "hfov": 110,
-                        "pitch": 0,
-                        "yaw": 0,
-                        "type": "equirectangular",
-                        "panorama": "Assets/ordinateur.jpg",
-                        "hotSpots": [
-                            {
-                                "pitch": 0,
-                                "yaw": 45,
-                                "type": "scene",
-                                "text": "Go to Second Environment",
-                                "sceneId": "scene2"
-                            }
-                        ]
-                    },
-                    "scene2": {
-                        "title": "Second Environment",
-                        "hfov": 110,
-                        "pitch": 0,
-                        "yaw": 0,
-                        "type": "equirectangular",
-                        "panorama": "Assets/art.png",
-                        "hotSpots": [
-                            {
-                                "pitch": 0,
-                                "yaw": -45,
-                                "type": "scene",
-                                "text": "Back to First Environment",
-                                "sceneId": "scene3"
-                            }
-                        ]
-                    },
-                    "scene3": {
+                "scene2": {
+                    "title": "Second Environment",
+                    "hfov": 110,
+                    "pitch": 0,
+                    "yaw": 0,
+                    "type": "equirectangular",
+                    "panorama": "Assets/art.png",
+                    "hotSpots": [
+                        {
+                            "pitch": 0,
+                            "yaw": -45,
+                            "type": "scene",
+                            "text": "Back to First Environment",
+                            "sceneId": "scene3",
+                            "clickHandlerFunc": () => changeSceneMusic('scene3')
+                        }
+                    ]
+                }
+                "scene3": {
                         "title": "First Environment",
                         "hfov": 110,
                         "pitch": 0,
@@ -165,7 +212,8 @@
                                 "yaw": 45,
                                 "type": "scene",
                                 "text": "Go to Second Environment",
-                                "sceneId": "scene3"
+                                "sceneId": "scene4"
+                                "clickHandlerFunc": () => changeSceneMusic('scene4')
                             }
                         ]
                     },
@@ -182,7 +230,8 @@
                                 "yaw": 45,
                                 "type": "scene",
                                 "text": "Go to Second Environment",
-                                "sceneId": "scene4"
+                                "sceneId": "scene5"
+                                "clickHandlerFunc": () => changeSceneMusic('scene5')
                             }
                         ]
                     },
@@ -199,7 +248,8 @@
                                 "yaw": 45,
                                 "type": "scene",
                                 "text": "Go to Second Environment",
-                                "sceneId": "scene5"
+                                "sceneId": "scene6"
+                                "clickHandlerFunc": () => changeSceneMusic('scene6')
                             }
                         ]
                     },
@@ -216,7 +266,8 @@
                                 "yaw": 45,
                                 "type": "scene",
                                 "text": "Go to Second Environment",
-                                "sceneId": "scene6"
+                                "sceneId": "scene7"
+                                "clickHandlerFunc": () => changeSceneMusic('scene7')
                             }
                         ]
                     },
@@ -234,38 +285,32 @@
                                 "type": "scene",
                                 "text": "Go to Second Environment",
                                 "sceneId": "scene1"
+                                "clickHandlerFunc": () => changeSceneMusic('scene1')
                             }
                         ]
                     }
-                }
-            });
-        }
-
-        function rotateImage() {
-            const duration = 2000;
-            const currentYaw = viewer.getYaw();
-            const targetYaw = currentYaw + 360;
-            const startTime = performance.now();
-
-            function animateRotation(time) {
-                const elapsed = time - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const interpolatedYaw = currentYaw + (targetYaw - currentYaw) * progress;
-                viewer.setYaw(interpolatedYaw);
-                if (progress < 1) {
-                    requestAnimationFrame(animateRotation);
-                }
             }
-            requestAnimationFrame(animateRotation);
-        }
-
-        video.addEventListener('ended', () => {
-            videoContainer.style.display = 'none';
-            viewerContainer.style.display = 'none';
-            showStartButton();
         });
+    }
 
-        videoContainer.style.display = 'flex';
-    </script>
+    // Démarre la visionneuse après l'intro
+    function startViewer() {
+        startButton.style.display = 'none';
+        videoContainer.style.display = 'none';
+        viewerContainer.style.display = 'flex';
+        createTourViewer();
+        changeSceneMusic('scene1'); // Musique de la première scène
+    }
+
+    // Événement à la fin de la vidéo d'introduction
+    video.addEventListener('ended', () => {
+        videoContainer.style.display = 'none';
+        viewerContainer.style.display = 'none';
+        startButton.style.display = 'block';
+    });
+
+    // Initialisation
+    videoContainer.style.display = 'flex';
+</script>
 </body>
 </html>
