@@ -86,14 +86,11 @@
         <audio id="audio" src="Assets/audio.mp3" preload="auto" loop></audio>
     </div>
 
-    <button id="start-btn" onclick="startViewer()">Start</button>
-
     <script>
     const videoContainer = document.getElementById('video-container');
     const viewerContainer = document.getElementById('viewer-container');
     const video = document.getElementById('intro-video');
     const audio = document.getElementById('audio');
-    const startButton = document.getElementById('start-btn');
     let viewer;
 
     // Mapping des scènes aux fichiers audio
@@ -170,6 +167,7 @@
                     "yaw": 0,
                     "type": "equirectangular",
                     "panorama": "/ordinateur.jpg",
+                    "autoload": true,
                     "hotSpots": [
                         {
                             "pitch": 0,
@@ -295,7 +293,6 @@
 
     // Démarre la visionneuse après l'intro
     function startViewer() {
-        startButton.style.display = 'none';
         videoContainer.style.display = 'none';
         viewerContainer.style.display = 'flex';
         createTourViewer();
